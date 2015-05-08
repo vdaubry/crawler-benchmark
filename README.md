@@ -9,7 +9,8 @@ Compare the performance of Ruby MRI VS JRuby when doing concurrent requests on a
 
 ## Test methodology
 
-Measure the total time to perform a GET request against the top 1000 internet domains. We increase the number of threads to compare how Ruby MRI and JRuby perform with different level of concurrency. 
+Crawl the first 1000 websites from [Quantcast top 1.000.000](https://www.quantcast.com/top-sites).
+Measure the total time to perform a GET request against 1000 different domains. We increase the number of threads to compare how Ruby MRI and JRuby perform with different level of concurrency. 
 
 We use [Sidekiq](https://github.com/mperham/sidekiq) to control the number of threads used to perform requests.
 
