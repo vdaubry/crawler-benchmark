@@ -13,7 +13,3 @@ group :test do
   gem 'mocha',          '~> 1.1.0'
   gem 'vcr',            '~> 2.9.3'
 end
-
-group :development, :test do
-  gem 'byebug',         '~> 4.0.5'
-end
