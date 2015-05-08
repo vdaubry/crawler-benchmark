@@ -1,1 +1,0 @@
-require_relative '../crawler_benchmark.rb'
