@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'irb'
+require_relative '../crawler_benchmark'
+
+Dotenv.load
+ENV['APP_ENV'] = ARGV[0] || "development"
+ARGV[0]=nil
+
+puts "Console loaded with env : #{ENV['APP_ENV']}"
+puts "to run in production: ruby console.rb production" if ENV['APP_ENV'] == "development"
+
+IRB.start
