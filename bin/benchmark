@@ -1,3 +1,0 @@
-require_relative '../crawler_benchmark'
-
-Crawler.new(website_number: ARGV[0]).start
