@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'json',             '~> 1.8.2'
-gem 'eventmachine',     '~> 1.0.7'
-gem 'em-http-request',  '~> 1.1.2'
+gem 'json',               '~> 1.8.2'
+gem 'eventmachine',       '~> 1.0.7'
+gem 'em-http-request',    '~> 1.1.2'
+gem 'rubydns',            '~> 0.8.5'

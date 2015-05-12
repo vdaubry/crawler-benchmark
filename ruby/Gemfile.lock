@@ -14,6 +14,8 @@ GEM
     eventmachine (1.0.7)
     http_parser.rb (0.6.0)
     json (1.8.2)
+    rubydns (0.8.5)
+      eventmachine (~> 1.0.0)
 
 PLATFORMS
   ruby
@@ -22,3 +24,4 @@ DEPENDENCIES
   em-http-request (~> 1.1.2)
   eventmachine (~> 1.0.7)
   json (~> 1.8.2)
+  rubydns (~> 0.8.5)
