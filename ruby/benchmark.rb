@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
-require 'net/http'
 require 'eventmachine'
 require 'em-http-request'
 require 'json'
-require 'benchmark'
 
 JSON_URL = "https://s3.amazonaws.com/vda-public-bucket/domains.json"
 
