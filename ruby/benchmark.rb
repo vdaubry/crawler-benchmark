@@ -3,8 +3,6 @@ require 'eventmachine'
 require 'em-http-request'
 require 'json'
 
-JSON_URL = "https://s3.amazonaws.com/vda-public-bucket/domains.json"
-
 class MeasureDomain
   def initialize(urls:)
     @urls = urls
