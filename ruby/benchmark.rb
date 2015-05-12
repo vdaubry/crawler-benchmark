@@ -44,7 +44,7 @@ end
 
 puts "Loading urls from JSON"
 file = File.open("#{File.expand_path(File.dirname(__FILE__))}/../ressources/domains.json")
-urls = JSON.parse(file.read)["domains"][0..1000]
+urls = JSON.parse(file.read)["domains"]
 
 start_time = Time.now.to_f
 MeasureDomain.new(urls: urls).start
