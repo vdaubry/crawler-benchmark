@@ -1,48 +1,25 @@
 #!/usr/bin/env ruby
 require 'eventmachine'
 require 'em-http-request'
-require 'rubydns'
-require 'rubydns/system'
 require 'json'
-require 'byebug'
 
 class MeasureDomain
   def initialize(urls:)
     @urls = urls
     @response_count = 0
-    @resolver = RubyDNS::Resolver.new(RubyDNS::System::nameservers)
   end
   
   def get_url(url:)
     puts "GET #{url}"
-    
-    @resolver.query(URI.parse(url).host) do |response|
-      if response.class == Resolv::DNS::Message && response.answer.empty?
-        p "Couldn't resolve hostname for #{url}" 
-        @response_count += 1
-      else
-        if response.answer[0][2].class == Resolv::DNS::Resource::IN::CNAME
-          get_url(url: "http://#{response.answer[0][2].name.to_s}")
-        else
-          ip = response.answer[0][2].address.to_s
-          host = response.answer[0][0].to_s
-          
-          domain = Addressable::URI.parse(url)
-          domain.host = ip
-          
-          puts "get #{ip}, for #{url}"
-          page = EventMachine::HttpRequest.new(domain, :connect_timeout => 15).get(:head =>{'host' => host})
-          page.errback { 
-            p "Couldn't get #{url}" 
-            @response_count += 1
-          }
-          page.callback {
-            @response_count += 1
-            puts "Got response from #{url} : #{page.response.size} bytes"
-          }
-        end
-      end
-    end
+    page = EventMachine::HttpRequest.new(url).get
+    page.errback { 
+      p "Couldn't get #{url}" 
+      @response_count += 1
+    }
+    page.callback {
+      @response_count += 1
+      puts "Got response from #{url} : #{page.response.size} bytes" 
+    }
   end
   
   def start
@@ -53,7 +30,7 @@ class MeasureDomain
         EM.stop
       }
       
-      EM::PeriodicTimer.new(0.01) do
+      EM::PeriodicTimer.new(0.001) do
         if n < @urls.size
           get_url(url: @urls[n])
           n+=1
@@ -66,8 +43,8 @@ class MeasureDomain
 end
 
 puts "Loading urls from JSON"
-file = File.open("#{File.expand_path(File.dirname(__FILE__))}/../ressources/domains-fast.json")
-urls = JSON.parse(file.read)["domains"][0..20000]
+file = File.open("#{File.expand_path(File.dirname(__FILE__))}/../ressources/domains.json")
+urls = JSON.parse(file.read)["domains"]
 
 start_time = Time.now.to_f
 MeasureDomain.new(urls: urls).start
