@@ -24,6 +24,7 @@ class MeasureDomain
         else
           if response.answer[0][2].class == Resolv::DNS::Resource::IN::CNAME
             get_url(url: "http://#{response.answer[0][2].name.to_s}")
+            @response_count += 1
           else
             ip = response.answer[0][2].address.to_s
             host = response.answer[0][0].to_s
@@ -55,10 +56,15 @@ class MeasureDomain
         EM.stop
       }
       
-      EM::PeriodicTimer.new(0.002) do
+      EM::PeriodicTimer.new(0.001) do
         if n < @urls.size
           get_url(url: @urls[n])
           n+=1
+        end
+        
+        if (@urls.count - @response_count) < 100
+          puts "response_count = #{@response_count}" 
+          puts "n = #{n}"
         end
         
         EM.stop if @response_count >= @urls.count
