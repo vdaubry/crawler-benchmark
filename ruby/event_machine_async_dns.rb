@@ -62,11 +62,6 @@ class MeasureDomain
           n+=1
         end
         
-        if (@urls.count - @response_count) < 100
-          puts "response_count = #{@response_count}" 
-          puts "n = #{n}"
-        end
-        
         EM.stop if @response_count >= @urls.count
       end
     }
