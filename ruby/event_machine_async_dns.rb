@@ -10,14 +10,14 @@ class MeasureDomain
   def initialize(urls:)
     @urls = urls
     @response_count = 0
-    @resolver = RubyDNS::Resolver.new(RubyDNS::System::nameservers)
+    @resolver = RubyDNS::Resolver.new(RubyDNS::System::nameservers, {:timeout => 1})
   end
   
   def get_url(url:)
     puts "GET #{url}"
     
     @resolver.query(URI.parse(url).host) do |response|
-      break if response.class != Resolv::DNS::Message
+      return if response.class != Resolv::DNS::Message
       
       if response.answer.empty?
         p "Couldn't resolve hostname for #{url}" 
