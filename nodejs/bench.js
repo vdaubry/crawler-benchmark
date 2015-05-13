@@ -27,7 +27,13 @@ for (var url in urls) {
   url = obj['domains'][url];
   
   console.log("GET "+url);
-  request(url, function (error, response, body) {
+  request({
+      uri: url,
+      method: "GET",
+      timeout: 15000,
+      followRedirect: true,
+      maxRedirects: 10
+    }, function (error, response, body) {
     
     if (!error && response.statusCode == 200) {
       console.log("Done, size = "+body.length);
