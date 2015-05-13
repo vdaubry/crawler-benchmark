@@ -15,11 +15,12 @@ function waitForUrlComplete() {
 }
 
 // Load json from file
-var obj = JSON.parse(fs.readFileSync('../ressources/domains.json', 'utf8'));
+var obj = JSON.parse(fs.readFileSync('../ressources/domains-fast.json', 'utf8'));
 var urls = obj['domains'].slice(0, 1000);
 
 process.on('uncaughtException', function (err) {
   console.log(err);
+  i+=1;
 });
 
 var i=0;
