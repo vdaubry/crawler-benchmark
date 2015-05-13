@@ -4,6 +4,7 @@ require 'em-http-request'
 require 'rubydns'
 require 'rubydns/system'
 require 'json'
+require 'byebug'
 
 class MeasureDomain
   def initialize(urls:)
@@ -16,7 +17,7 @@ class MeasureDomain
     puts "GET #{url}"
     
     @resolver.query(URI.parse(url).host) do |response|
-      if response.answer.empty?
+      if response.class == Resolv::DNS::Message && response.answer.empty?
         p "Couldn't resolve hostname for #{url}" 
         @response_count += 1
       else
@@ -66,7 +67,7 @@ end
 
 puts "Loading urls from JSON"
 file = File.open("#{File.expand_path(File.dirname(__FILE__))}/../ressources/domains-fast.json")
-urls = JSON.parse(file.read)["domains"][0..30000]
+urls = JSON.parse(file.read)["domains"][0..20000]
 
 start_time = Time.now.to_f
 MeasureDomain.new(urls: urls).start

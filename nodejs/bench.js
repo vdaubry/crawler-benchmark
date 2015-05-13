@@ -38,7 +38,7 @@ function getUrl(url) {
 
 // Load json from file
 var obj = JSON.parse(fs.readFileSync('../ressources/domains-fast.json', 'utf8'));
-var urls = obj['domains'].slice(0, 30000);
+var urls = obj['domains'].slice(0, 20000);
 
 process.on('uncaughtException', function (err) {
   console.log(err);
@@ -50,7 +50,6 @@ for (var url in urls) {
   url = obj['domains'][url];
   getUrl(url)
 }
-
 
 var start_time = Date.now();
 waitForUrlComplete();
