@@ -17,31 +17,31 @@ class MeasureDomain
     puts "GET #{url}"
     
     @resolver.query(URI.parse(url).host) do |response|
-      return if response.class != Resolv::DNS::Message
-      
-      if response.answer.empty?
-        p "Couldn't resolve hostname for #{url}" 
-        @response_count += 1
-      else
-        if response.answer[0][2].class == Resolv::DNS::Resource::IN::CNAME
-          get_url(url: "http://#{response.answer[0][2].name.to_s}")
+      if response.class == Resolv::DNS::Message
+        if response.answer.empty?
+          p "Couldn't resolve hostname for #{url}" 
+          @response_count += 1
         else
-          ip = response.answer[0][2].address.to_s
-          host = response.answer[0][0].to_s
-          
-          domain = Addressable::URI.parse(url)
-          domain.host = ip
-          
-          puts "get #{ip}, for #{url}"
-          page = EventMachine::HttpRequest.new(domain, :connect_timeout => 15, :inactivity_timeout => 10).get(:head =>{'host' => host}, :redirects => 3)
-          page.errback { 
-            p "Couldn't get #{url}" 
-            @response_count += 1
-          }
-          page.callback {
-            @response_count += 1
-            puts "Got response from #{url} : #{page.response.size} bytes"
-          }
+          if response.answer[0][2].class == Resolv::DNS::Resource::IN::CNAME
+            get_url(url: "http://#{response.answer[0][2].name.to_s}")
+          else
+            ip = response.answer[0][2].address.to_s
+            host = response.answer[0][0].to_s
+            
+            domain = Addressable::URI.parse(url)
+            domain.host = ip
+            
+            puts "get #{ip}, for #{url}"
+            page = EventMachine::HttpRequest.new(domain, :connect_timeout => 10, :inactivity_timeout => 10).get(:head =>{'host' => host}, :redirects => 3)
+            page.errback { 
+              p "Couldn't get #{url}" 
+              @response_count += 1
+            }
+            page.callback {
+              @response_count += 1
+              puts "Got response from #{url} : #{page.response.size} bytes"
+            }
+          end
         end
       end
     end
@@ -55,7 +55,7 @@ class MeasureDomain
         EM.stop
       }
       
-      EM::PeriodicTimer.new(0.01) do
+      EM::PeriodicTimer.new(0.002) do
         if n < @urls.size
           get_url(url: @urls[n])
           n+=1
