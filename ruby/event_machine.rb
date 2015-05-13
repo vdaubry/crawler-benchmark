@@ -52,7 +52,7 @@ class MeasureDomain
         EM.stop
       }
       
-      EM::PeriodicTimer.new(0.1) do
+      EM::PeriodicTimer.new(0.01) do
         if n < @urls.size
           get_url(url: @urls[n])
           n+=1
@@ -66,7 +66,7 @@ end
 
 puts "Loading urls from JSON"
 file = File.open("#{File.expand_path(File.dirname(__FILE__))}/../ressources/domains-fast.json")
-urls = JSON.parse(file.read)["domains"][0..1000]
+urls = JSON.parse(file.read)["domains"][0..30000]
 
 start_time = Time.now.to_f
 MeasureDomain.new(urls: urls).start

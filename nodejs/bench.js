@@ -14,19 +14,7 @@ function waitForUrlComplete() {
   }, delay);
 }
 
-// Load json from file
-var obj = JSON.parse(fs.readFileSync('../ressources/domains-fast.json', 'utf8'));
-var urls = obj['domains'].slice(0, 1000);
-
-process.on('uncaughtException', function (err) {
-  console.log(err);
-  i+=1;
-});
-
-var i=0;
-for (var url in urls) {
-  url = obj['domains'][url];
-  
+function getUrl(url) {
   console.log("GET "+url);
   request({
       uri: url,
@@ -37,7 +25,7 @@ for (var url in urls) {
     }, function (error, response, body) {
     
     if (!error && response.statusCode == 200) {
-      console.log("Done, size = "+body.length);
+      console.log("Done "+url+", size = "+body.length);
       i+=1;
     }
     else {
@@ -46,6 +34,21 @@ for (var url in urls) {
       i+=1;
     }
   });
+}
+
+// Load json from file
+var obj = JSON.parse(fs.readFileSync('../ressources/domains-fast.json', 'utf8'));
+var urls = obj['domains'].slice(0, 30000);
+
+process.on('uncaughtException', function (err) {
+  console.log(err);
+  i+=1;
+});
+
+var i=0;
+for (var url in urls) {
+  url = obj['domains'][url];
+  getUrl(url)
 }
 
 
