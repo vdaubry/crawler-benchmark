@@ -5,7 +5,7 @@ class Crawler
   end
   
   def jobs_count
-    Sidekiq::Queue.new("crawler").size
+    Sidekiq::Queue.new("crawler").size+Sidekiq::ProcessSet.new("crawler").size
   end
   
   def measure
@@ -21,9 +21,10 @@ class Crawler
     
   def start
     measure do
-      f = File.open("seed/top-websites.txt", 'r')
-      f.readlines[0..@website_number].each do |domain|
-        url = "http://#{domain.gsub("\r\n", "")}"
+      puts "Loading urls from JSON"
+      file = File.open("#{File.expand_path(File.dirname(__FILE__))}/../ressources/domains-fast.json")
+      urls = JSON.parse(file.read)["domains"][0..5000]
+      urls.each do |url|
         FetchUrlWorker.perform_async(url)
       end
 
