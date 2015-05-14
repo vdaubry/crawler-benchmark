@@ -32,7 +32,6 @@ async.forEach(urls, function (url, callback){
     });
 }, function(err) {
     console.log("Iterator done");
+    var total_time = Date.now() - start_time;
+    console.log("total time = "+total_time/1000.0+" seconds");
 });
-
-var total_time = Date.now() - start_time;
-console.log("total time = "+total_time/1000.0+" seconds");

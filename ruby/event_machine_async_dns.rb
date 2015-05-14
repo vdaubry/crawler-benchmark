@@ -10,7 +10,8 @@ class MeasureDomain
   def initialize(urls:)
     @urls = urls
     @response_count = 0
-    @resolver = RubyDNS::Resolver.new(RubyDNS::System::nameservers, {:timeout => 1})
+    @resolver = RubyDNS::Resolver.new([[:udp, "52.5.37.108", 53], [:tcp, "52.5.37.108", 53]], {:timeout => 1})
+    #@resolver = RubyDNS::Resolver.new(RubyDNS::System::nameservers, {:timeout => 1})
   end
   
   def get_url(url:)
@@ -33,7 +34,7 @@ class MeasureDomain
             domain.host = ip
             
             puts "get #{ip}, for #{url}"
-            page = EventMachine::HttpRequest.new(domain, :connect_timeout => 10, :inactivity_timeout => 10).get(:head =>{'host' => host}, :redirects => 3)
+            page = EventMachine::HttpRequest.new(domain, :connect_timeout => 5, :inactivity_timeout => 5).get(:head =>{'host' => host}, :redirects => 3)
             page.errback { 
               p "Couldn't get #{url}" 
               @response_count += 1
