@@ -1,2 +1,3 @@
 *.json
 nodejs/node_modules/*
+tmp/*
