@@ -33,15 +33,17 @@ class MeasureDomain
           domain.host = ip
           
           puts "get #{ip}, for #{url}"
-          http = EventMachine::HttpRequest.new(domain, :connect_timeout => 5, :inactivity_timeout => 5, :keepalive => false).get(:head =>{'host' => host}, :redirects => 3)
-          http.errback { 
-            p "Couldn't get #{url} : #{http.error}/#{http.response}"
-            @failure_count += 1
-          }
-          start = Time.now.to_f
-          http.callback {
-            @success_count += 1
-            puts "Got response from #{url} : #{http.response.size} bytes in #{Time.now.to_f - start}"
+          Timeout::timeout(10) {
+            http = EventMachine::HttpRequest.new(domain, :connect_timeout => 5, :inactivity_timeout => 5, :keepalive => false).get(:head =>{'host' => host}, :redirects => 3)
+            http.errback { 
+              p "Couldn't get #{url} : #{http.error}/#{http.response}"
+              @failure_count += 1
+            }
+            start = Time.now.to_f
+            http.callback {
+              @success_count += 1
+              puts "Got response from #{url} : #{http.response.size} bytes in #{Time.now.to_f - start}"
+            }
           }
         end
       end
@@ -56,7 +58,7 @@ class MeasureDomain
         EM.stop
       }
       
-      EM::PeriodicTimer.new(0.005) do
+      EM::PeriodicTimer.new(0.001) do
         if n < @urls.size
           url = @urls[n]
           puts "GET #{url} , #{n}"
@@ -72,7 +74,7 @@ end
 
 puts "Loading urls from JSON"
 file = File.open("#{File.expand_path(File.dirname(__FILE__))}/../ressources/domains-fast.json")
-urls = JSON.parse(file.read)["domains"][0..50]
+urls = JSON.parse(file.read)["domains"][0..2000]
 
 start_time = Time.now.to_f
 m = MeasureDomain.new(urls: urls)
