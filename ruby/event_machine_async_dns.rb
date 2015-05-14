@@ -8,6 +8,7 @@ require 'byebug'
 
 
 class MeasureDomain
+  attr_reader :success_count, :failure_count
   def initialize(urls:)
     @urls = urls
     @success_count = 0
@@ -63,7 +64,6 @@ class MeasureDomain
           n+=1
         end
         
-        #puts "@response_count = #{@response_count}" if (@urls.count - @response_count < 100)
         EM.stop if (@success_count+@failure_count) >= @urls.count
       end
     }
@@ -72,9 +72,12 @@ end
 
 puts "Loading urls from JSON"
 file = File.open("#{File.expand_path(File.dirname(__FILE__))}/../ressources/domains-fast.json")
-urls = JSON.parse(file.read)["domains"][1000..5000]
+urls = JSON.parse(file.read)["domains"][0..50]
 
 start_time = Time.now.to_f
-MeasureDomain.new(urls: urls).start
+m = MeasureDomain.new(urls: urls)
+m.start
 total_time  = Time.now.to_f - start_time
 puts "Benchmark finished : called #{urls.count} urls in #{total_time} seconds"
+puts "Success count : #{m.success_count}"
+puts "Failure count : #{m.failure_count}"
