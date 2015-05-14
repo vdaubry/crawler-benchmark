@@ -4,7 +4,7 @@ require 'sidekiq'
 require 'mechanize'
 require 'timeout'
 require 'resolv-replace'
-require_relative 'redis_init'
+require_relative 'sidekiq_init'
 
 class FetchUrlWorker
   include Sidekiq::Worker
