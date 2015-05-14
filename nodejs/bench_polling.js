@@ -2,7 +2,7 @@ var fs = require('fs');
 var request = require('request');
 var redis = require("redis");
 
-var delay = 1;
+var delay = 0.1;
 function pollRedis() {    
   setTimeout(function() {
     client.lpop("bc:domains:perf:node:list", function(err, url) {
