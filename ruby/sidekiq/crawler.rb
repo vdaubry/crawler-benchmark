@@ -2,6 +2,7 @@ require 'sidekiq'
 require 'sidekiq/api'
 require 'json'
 require_relative 'fetch_url_worker'
+require_relative 'redis_init'
 
 class Crawler
   def initialize(website_number:)
